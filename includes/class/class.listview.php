@@ -72,6 +72,8 @@ class Listview
 		if(!isset($TParam['orderby']['noOrder'])) $TParam['orderby']['noOrder']=array();
 		if(!isset($TParam['allow-fields-select'])) $TParam['allow-fields-select'] = 0;
 		if(!isset($TParam['search'])) $TParam['search'] = array();
+		if(!isset($TParam['sortfield'])) $TParam['sortfield'] = 'rowid';
+		if(!isset($TParam['sortorder'])) $TParam['sortorder'] = 'asc';
 
 		if(!isset($TParam['list']))$TParam['list']=array();
 		$TParam['list'] = array_merge(array(
@@ -87,6 +89,8 @@ class Listview
 			,'export'=>array()
 			,'view_type'=>''
 			,'massactions'=>array()
+			,'morehtmlrighttitle'=>''
+			,'param_url'=>''
 		),$TParam['list']);
 
 		if (empty($TParam['limit'])) $TParam['limit'] = array();
@@ -152,10 +156,11 @@ class Listview
 				$TKey[] = $prefixe. $field ;
 			}
 		}
-		else
+		else if (!empty($TPrefixe))
 		{
 			$TKey[] = $TPrefixe[0].$key;
 		}
+		else $TKey[] = $key;
 
 		return $TKey;
 	}
@@ -233,6 +238,33 @@ class Listview
 
                 $TSQL[] = $sKey . ' ' . $TParam['operator'][$key] . ' (' . $value . ')';
 			}
+			elseif ($TParam['operator'][$key]=='FIND_IN_SET')
+			{
+				if (is_array($value)) {
+					if (!empty($value)) {
+						$TSQLFIND = array();
+						foreach ($value as $k => $v){
+							if($this->db->type == 'mysqli'){
+								$TSQLFIND[] = ' FIND_IN_SET("'.$this->db->escape($v).'", '.$sKey.') > 0 ';
+							}
+							else{
+								$TSQLFIND[] =  ' "' . $this->db->escape($v) . '" = ANY (string_to_array(' . $sKey . ', ",")) ';
+							}
+						}
+						$TSQL[] = implode(' OR ', $TSQLFIND);
+					}
+				}
+				else
+				{
+					$value = $this->db->escape($value);
+					if($this->db->type == 'mysqli') {
+						$TSQL[] = ' FIND_IN_SET("' . $value . '", ' . $sKey . ') > 0 ';
+					}
+					else{
+						$TSQL[] =  ' "' . $value . '" = ANY (string_to_array(' . $sKey . ',","))';
+					}
+				}
+			}
 			else
 			{
 				if(strpos($value,'%')===false) $value = '%'.$value.'%';
@@ -290,6 +322,9 @@ class Listview
 				foreach ($TsKey as $i => &$sKey)
 				{
 				    if(!empty($TParam['search'][$field]['no-auto-sql-search'])){
+						if(!empty($TParam['search'][$field]['searchQueryOverride'])){
+							$sql.=' AND ( '.$TParam['search'][$field]['searchQueryOverride'].' ) ';
+						}
 				        continue;
                     }
 
@@ -500,10 +535,15 @@ class Listview
 
 		if($nb_search_in_bar>0 || !empty($TParam['list']['head_search']))
 		{
-			end($TSearch);
-			list($key,$v) = each($TSearch);
+			if (version_compare(PHP_VERSION, '7.3.0') >= 0) {
+				$TSearch[array_key_last($TSearch)] .= $search_button;
+			}
+			else {
+				end($TSearch);
+				list($key, $v) = each($TSearch);
 
-			$TSearch[$key].=$search_button;
+				$TSearch[$key] .= $search_button;
+			}
 		}
 		else
         {
@@ -797,7 +837,9 @@ class Listview
 			}
 
             $out .= getTitleFieldOfList($label, 0, $_SERVER["PHP_SELF"], $search, '', '&'.$TParam['list']['param_url'].'&limit='.$TParam['limit']['nbLine'].$moreparams, $moreattrib, $TParam['sortfield'], $TParam['sortorder'], $prefix, $disablesortlink, $tooltip);
-			$out .= $head['more'];
+			if (array_key_exists('more', $head)) {
+				$out .= $head['more'];
+			}
 		}
 
 		//$out .= '<th aligne="right" class="maxwidthsearch liste_titre">--</th>';
@@ -837,7 +879,10 @@ class Listview
 							}
 						}
 
-						$moreattrib = 'style="width:'.$head['width'].';text-align:'.$head['text-align'].'"';
+						$moreattrib = 'style="';
+						if (array_key_exists('width', $head)) $moreattrib.= 'width:'.$head['width'].';';
+						if (array_key_exists('text-align', $head)) $moreattrib.= 'text-align:'.$head['text-align'];
+						$moreattrib.= '"';
 						$out.='<td class="'.$field.'" '.$moreattrib.'>'.$value_aff.'</td>';
 					}
 
