@@ -37,7 +37,7 @@ if ((float) DOL_VERSION < 7.0)
 		*/
 	   protected function isDate($info)
 	   {
-		   if (is_callable('parent::isDate')) return parent::isDate($info);
+		   if (is_callable(parent::class.'::isDate')) return parent::isDate($info);
 
 		   if(isset($info['type']) && ($info['type']=='date' || $info['type']=='datetime' || $info['type']=='timestamp')) return true;
 		   else return false;
@@ -51,7 +51,7 @@ if ((float) DOL_VERSION < 7.0)
 		*/
 	   protected function isArray($info)
 	   {
-		   if (is_callable('parent::isArray')) return parent::isArray($info);
+		   if (is_callable(parent::class.'::isArray')) return parent::isArray($info);
 
 		   if(is_array($info))
 		   {
@@ -69,7 +69,7 @@ if ((float) DOL_VERSION < 7.0)
 		*/
 	   protected function isNull($info)
 	   {
-		   if (is_callable('parent::isNull')) return parent::isNull($info);
+		   if (is_callable(parent::class.'::isNull')) return parent::isNull($info);
 
 		   if(is_array($info))
 		   {
@@ -87,7 +87,7 @@ if ((float) DOL_VERSION < 7.0)
 		*/
 	   protected function isInt($info)
 	   {
-		   if (is_callable('parent::isInt')) return parent::isInt($info);
+		   if (is_callable(parent::class.'::isInt')) return parent::isInt($info);
 
 		   if(is_array($info))
 		   {
@@ -105,7 +105,7 @@ if ((float) DOL_VERSION < 7.0)
 		*/
 	   protected function isFloat($info)
 	   {
-		   if (is_callable('parent::isFloat')) return parent::isFloat($info);
+		   if (is_callable(parent::class.'::isFloat')) return parent::isFloat($info);
 
 		   if(is_array($info))
 		   {
@@ -123,7 +123,7 @@ if ((float) DOL_VERSION < 7.0)
 		*/
 	   protected function isText($info)
 	   {
-		   if (is_callable('parent::isText')) return parent::isText($info);
+		   if (is_callable(parent::class.'::isText')) return parent::isText($info);
 
 		   if(is_array($info))
 		   {
@@ -141,7 +141,7 @@ if ((float) DOL_VERSION < 7.0)
 		*/
 	   protected function isIndex($info)
 	   {
-		   if (is_callable('parent::isIndex')) return parent::isIndex($info);
+		   if (is_callable(parent::class.'::isIndex')) return parent::isIndex($info);
 
 		   if(is_array($info))
 		   {
@@ -282,7 +282,7 @@ else
 		*/
 	   public function isDate($info)
 	   {
-		   if (is_callable('parent::isDate')) return parent::isDate($info);
+		   if (is_callable(parent::class.'::isDate')) return parent::isDate($info);
 
 		   if(isset($info['type']) && ($info['type']=='date' || $info['type']=='datetime' || $info['type']=='timestamp')) return true;
 		   else return false;
@@ -296,7 +296,7 @@ else
 		*/
 	   public function isArray($info)
 	   {
-		   if (is_callable('parent::isArray')) return parent::isArray($info);
+		   if (is_callable(parent::class.'::isArray')) return parent::isArray($info);
 
 		   if(is_array($info))
 		   {
@@ -314,7 +314,7 @@ else
 		*/
 	   public function isNull($info)
 	   {
-		   if (is_callable('parent::isNull')) return parent::isNull($info);
+		   if (is_callable(parent::class.'::isNull')) return parent::isNull($info);
 
 		   if(is_array($info))
 		   {
@@ -332,7 +332,7 @@ else
 		*/
 	   public function isInt($info)
 	   {
-		   if (is_callable('parent::isInt')) return parent::isInt($info);
+		   if (is_callable(parent::class.'::isInt')) return parent::isInt($info);
 
 		   if(is_array($info))
 		   {
@@ -350,7 +350,7 @@ else
 		*/
 	   public function isFloat($info)
 	   {
-		   if (is_callable('parent::isFloat')) return parent::isFloat($info);
+		   if (is_callable(parent::class.'::isFloat')) return parent::isFloat($info);
 
 		   if(is_array($info))
 		   {
@@ -368,7 +368,7 @@ else
 		*/
 	   public function isText($info)
 	   {
-		   if (is_callable('parent::isText')) return parent::isText($info);
+		   if (is_callable(parent::class.'::isText')) return parent::isText($info);
 
 		   if(is_array($info))
 		   {
@@ -386,7 +386,7 @@ else
 		*/
 	   public function isIndex($info)
 	   {
-		   if (is_callable('parent::isIndex')) return parent::isIndex($info);
+		   if (is_callable(parent::class.'::isIndex')) return parent::isIndex($info);
 
 		   if(is_array($info))
 		   {
@@ -550,9 +550,9 @@ class SeedObject extends SeedObjectDolibarr
 		$this->date_creation = 0;
 		$this->tms = 0;
 
-		if(!isset($this->fields['rowid'])) $this->fields['rowid']=array('type'=>'integer','index'=>true);
-		if(!isset($this->fields['date_creation'])) $this->fields['date_creation']=array('type'=>'date');
-		if(!isset($this->fields['tms'])) $this->fields['tms']=array('type'=>'date');
+		if(!isset($this->fields['rowid'])) $this->fields['rowid']=array('type'=>'integer','index'=>true, 'enabled'=>1, 'visible'=>0);
+		if(!isset($this->fields['date_creation'])) $this->fields['date_creation']=array('type'=>'date', 'enabled'=>1, 'visible'=>0);
+		if(!isset($this->fields['tms'])) $this->fields['tms']=array('type'=>'date', 'enabled'=>1, 'visible'=>0);
 
 		if (!empty($this->fields))
 		{
@@ -1050,7 +1050,7 @@ class SeedObject extends SeedObjectDolibarr
 
 		foreach ($Tab as $key => $value)
 		{
-            if($this->fields[$key]['type'] == 'datetime'){
+            if($this->checkFieldType($key, 'datetime')){
                 if(!empty($value)) $value .= ' '. $Tab[$key.'hour'] .':'.$Tab[$key.'min'].':'.$Tab[$key.'sec'];
                 $this->setDate($key, $value);
             }
@@ -1088,7 +1088,7 @@ class SeedObject extends SeedObjectDolibarr
 	public function createCommon(User $user, $notrigger = false)
 	{
 		// method_exists() with key word 'parent' doesn't work
-		if (is_callable('parent::createCommon')) return parent::createCommon($user, $notrigger);
+		if (is_callable(parent::class.'::createCommon')) return parent::createCommon($user, $notrigger);
 
 
         $error = 0;
@@ -1142,63 +1142,6 @@ class SeedObject extends SeedObjectDolibarr
 		}
 	}
 
-	/**
-	 * Load object in memory from the database
-	 *
-	 * @param int    $id   		Id object
-	 * @param string $ref  		Ref
-	 * @param string $morewhere	Ref
-	 * @return int         <0 if KO, 0 if not found, >0 if OK
-	 */
-	public function fetchCommon($id, $ref = null, $morewhere='')
-	{
-		// method_exists() with key word 'parent' doesn't work
-		if (is_callable('parent::fetchCommon')) return parent::fetchCommon($id, $ref, $morewhere);
-
-
-		if (empty($id) && empty($ref)) return false;
-
-		$sql = 'SELECT '.$this->get_field_list().', date_creation, tms';
-		$sql.= ' FROM '.MAIN_DB_PREFIX.$this->table_element;
-
-		if(!empty($id)) $sql.= ' WHERE rowid = '.$id;
-		else $sql.= " WHERE ref = ".$this->quote($ref, $this->fields['ref']);
-		if ($morewhere) $sql.=$morewhere;
-
-		$res = $this->db->query($sql);
-		if ($res)
-		{
-			$num = $this->db->num_rows($res);
-
-			if(empty($num))
-			{
-				return 0;
-			}
-
-    		if ($obj = $this->db->fetch_object($res))
-    		{
-                $this->id = $id;
-                $this->set_vars_by_db($obj);
-
-                $this->date_creation = $this->db->idate($obj->date_creation);
-                $this->tms = $this->db->idate($obj->tms);
-
-                return $this->id;
-    		}
-    		else
-    		{
-    			$this->error = $this->db->lasterror();
-    			$this->errors[] = $this->error;
-    			return -1;
-    		}
-		}
-		else
-		{
-		    $this->error = $this->db->lasterror();
-		    $this->errors[] = $this->error;
-		    return -1;
-		}
-	}
 
 	/**
 	 * Update object into database
@@ -1210,7 +1153,7 @@ class SeedObject extends SeedObjectDolibarr
 	public function updateCommon(User $user, $notrigger = false)
 	{
 		// method_exists() with key word 'parent' doesn't work
-		if (is_callable('parent::updateCommon')) return parent::updateCommon($user, $notrigger);
+		if (is_callable(parent::class.'::updateCommon')) return parent::updateCommon($user, $notrigger);
 
 
 	    $error = 0;
@@ -1275,7 +1218,7 @@ class SeedObject extends SeedObjectDolibarr
 	public function deleteCommon(User $user, $notrigger = false, $forcechilddeletion = 0)
 	{
 		// method_exists() with key word 'parent' doesn't work
-		if (is_callable('parent::deleteCommon')) return parent::deleteCommon($user, $notrigger, $forcechilddeletion);
+		if (is_callable(parent::class.'::deleteCommon')) return parent::deleteCommon($user, $notrigger, $forcechilddeletion);
 
 
 	    $error=0;
@@ -1315,7 +1258,11 @@ class SeedObject extends SeedObjectDolibarr
 
 	function addFieldsInDb()
 	{
-		$resql = $this->db->query('SHOW FIELDS FROM ' . MAIN_DB_PREFIX . $this->table_element);
+		if ($this->db->type == 'pgsql') {
+			$resql = $this->db->query("SELECT column_name FROM information_schema.columns WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema' AND table_name = '". MAIN_DB_PREFIX . $this->table_element . "';");
+		} else {
+			$resql = $this->db->query('SHOW FIELDS FROM ' . MAIN_DB_PREFIX . $this->table_element);
+		}
 
 		if($resql===false ) {
 			var_dump($this->db);exit;
@@ -1325,7 +1272,11 @@ class SeedObject extends SeedObjectDolibarr
 		$Tab = array();
 		while ($obj = $this->db->fetch_object($resql))
 		{
-			$Tab[] = $obj->Field;
+			if ($this->db->type == 'pgsql') {
+				$Tab[] = $obj->column_name;
+			} else {
+				$Tab[] = $obj->Field;
+			}
 		}
 
 		$TChamps = array_merge(array('date_creation' => array('type' => 'date'), 'tms' => array('type' => 'date'),'rowid'=>array('type'=>'integer','index'=>true)), $this->fields);
@@ -1336,7 +1287,7 @@ class SeedObject extends SeedObjectDolibarr
 			{
 				if ($this->isInt($info))
 				{
-                    $sql = 'ALTER TABLE '.MAIN_DB_PREFIX.$this->table_element.' ADD '.$champs.' int(11) '.(! empty($info['notnull']) ? ' NOT NULL' : '').' DEFAULT \''.(! empty($info['default']) && is_int($info['default']) ? $info['default'] : '0')."'";
+                    $sql = 'ALTER TABLE '.MAIN_DB_PREFIX.$this->table_element.' ADD '.$champs.' integer '.(! empty($info['notnull']) ? ' NOT NULL' : '').' DEFAULT \''.(! empty($info['default']) && is_int($info['default']) ? $info['default'] : '0')."'";
                     if(array_key_exists('foreignkey', $info) && ! empty($info['foreignkey'])) {
                         $fk = explode('.', $info['foreignkey']);    // fk[0] => tablename, fk[1] => field
                         $sql.= ', ADD CONSTRAINT FOREIGN KEY ('.$champs.') REFERENCES '.$fk[0].'('.$fk[1].')';
@@ -1374,7 +1325,12 @@ class SeedObject extends SeedObjectDolibarr
 
 		if(empty($this->table_element))exit('NoDataTableDefined');
 
-		$resql = $this->db->query("SHOW TABLES FROM `" . $dolibarr_main_db_name . "` LIKE '" . MAIN_DB_PREFIX . $this->table_element . "'");
+		if ($this->db->type == 'pgsql') {
+			$resql = $this->db->query("SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename ILIKE '" . MAIN_DB_PREFIX . $this->table_element . "';");
+		} else {
+			$resql = $this->db->query("SHOW TABLES FROM `" . $dolibarr_main_db_name . "` LIKE '" . MAIN_DB_PREFIX . $this->table_element . "'");
+		}
+
 		if($resql === false) {
 			var_dump($this->db);exit;
 
@@ -1391,38 +1347,47 @@ class SeedObject extends SeedObjectDolibarr
  				rowid integer AUTO_INCREMENT PRIMARY KEY
  				,date_creation datetime DEFAULT NULL
  				,tms timestamp
- 				,KEY date_creation (date_creation)
- 				,KEY tms (tms)
  				) ENGINE=InnoDB DEFAULT CHARSET=" . $charset;
 
-            if (!empty($conf->db->dolibarr_main_db_collation)) $sql .= ' COLLATE='.$conf->db->dolibarr_main_db_collation;
-
-
-            $res = $this->db->query($sql);
-			if($res===false) {
-				var_dump($this->db);exit;
-
-
+            if (empty($conf->db->dolibarr_main_db_collation)) {
+				$sql .= ';';
+			} else {
+				$sql .= ' COLLATE='.$conf->db->dolibarr_main_db_collation.';';
 			}
 
-
+			$res = $this->db->query($sql);
+			if($res===false) {
+				var_dump($this->db);exit;
+			}
+			$sql = 'ALTER TABLE ' . MAIN_DB_PREFIX . $this->table_element . ' ADD INDEX idx_'.$this->table_element .'_date_creation (date_creation);';
+			$res = $this->db->query($sql);
+			if($res===false) {
+				var_dump($this->db);exit;
+			}
+			$sql = 'ALTER TABLE ' . MAIN_DB_PREFIX . $this->table_element . ' ADD INDEX idx_'.$this->table_element .'_tms (tms);';
+			$res = $this->db->query($sql);
+			if($res===false) {
+				var_dump($this->db);exit;
+			}
 		}
 		else
 		{
-			// Conversion de l'ancienne table sans auto_increment
-			$resql = $this->db->query('DESC '.MAIN_DB_PREFIX . $this->table_element);
-			if ($resql)
-			{
-				while ($desc = $this->db->fetch_object($resql))
+			if ($this->db->type != 'pgsql') {
+				// Conversion de l'ancienne table sans auto_increment
+				$resql = $this->db->query('DESC '.MAIN_DB_PREFIX . $this->table_element);
+				if ($resql)
 				{
-					if ($desc->Field == 'rowid')
+					while ($desc = $this->db->fetch_object($resql))
 					{
-						if (strpos($desc->Extra, 'auto_increment') === false)
+						if ($desc->Field == 'rowid')
 						{
-							$this->db->query('ALTER TABLE '.MAIN_DB_PREFIX . $this->table_element.' MODIFY COLUMN rowid INT auto_increment');
-						}
+							if (strpos($desc->Extra, 'auto_increment') === false)
+							{
+								$this->db->query('ALTER TABLE '.MAIN_DB_PREFIX . $this->table_element.' MODIFY COLUMN rowid INT auto_increment');
+							}
 
-						break;
+							break;
+						}
 					}
 				}
 			}
@@ -1432,7 +1397,13 @@ class SeedObject extends SeedObjectDolibarr
 
 		if(!empty($this->isextrafieldmanaged))
         {
-            $resql = $this->db->query("SHOW TABLES FROM " . $dolibarr_main_db_name . " LIKE '" . MAIN_DB_PREFIX . $this->table_element . "_extrafields'");
+
+			if($this->db->type == 'pgsql'){
+				$resql = $this->db->query("SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema' AND tablename ILIKE '" . MAIN_DB_PREFIX . $this->table_element . "_extrafields';");
+			} else {
+				$resql = $this->db->query("SHOW TABLES FROM " . $dolibarr_main_db_name . " LIKE '" . MAIN_DB_PREFIX . $this->table_element . "_extrafields'");
+			}
+
             if($resql === false) {
                 var_dump($this->db);exit;
             }
@@ -1449,12 +1420,26 @@ class SeedObject extends SeedObjectDolibarr
  				,tms timestamp
  				,fk_object integer
  				,import_key varchar(14)
- 				,KEY tms (tms)
- 				, UNIQUE fk_object (fk_object)
  				) ENGINE=InnoDB DEFAULT CHARSET=" . $charset;
 
-                if (!empty($conf->db->dolibarr_main_db_collation)) $sql .= ' COLLATE='.$conf->db->dolibarr_main_db_collation;
+				 if (empty($conf->db->dolibarr_main_db_collation)) {
+					$sql .= ';';
+				} else {
+					$sql .= ' COLLATE='.$conf->db->dolibarr_main_db_collation.';';
+				}
 
+				$res = $this->db->query($sql);
+				if($res===false) {
+					var_dump($this->db);exit;
+				}
+
+				$sql = 'ALTER TABLE ' . MAIN_DB_PREFIX . $this->table_element . ' ADD UNIQUE INDEX udx_'.$this->table_element .'_fk_object (fk_object);';
+                $res = $this->db->query($sql);
+                if($res===false) {
+                    var_dump($this->db);exit;
+                }
+
+				$sql = 'ALTER TABLE ' . MAIN_DB_PREFIX . $this->table_element . ' ADD INDEX idx_'.$this->table_element .'_tms (tms);';
                 $res = $this->db->query($sql);
                 if($res===false) {
                     var_dump($this->db);exit;

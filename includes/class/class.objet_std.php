@@ -212,7 +212,15 @@ function _no_save_vars($lst_chp) {
 
 	  		if(!in_array($champs, $Tab)) {
 				if($this->_is_int($info)) {
-					$db->Execute('ALTER TABLE `'.$this->get_table().'` ADD `'.$champs.'` int(11) NOT NULL DEFAULT \''.(!empty($info['default']) && is_int($info['default']) ? $info['default'] : '0').'\'');
+                    $sqlAlterInt = 'ALTER TABLE `'.$this->get_table().'` ADD `'.$champs.'` integer';
+                    if(! isset($info['nullable']) || $info['nullable'] === false) $sqlAlterInt .= ' NOT';
+                    $sqlAlterInt .= ' NULL';
+
+                    if(empty($info['default']) || ! is_int($info['default']) && strtoupper($info['default']) !== 'NULL') $sqlAlterInt .= ' DEFAULT 0';
+                    else $sqlAlterInt .= ' DEFAULT '.$info['default'];
+
+					$db->Execute($sqlAlterInt);
+//					$db->Execute('ALTER TABLE `'.$this->get_table().'` ADD `'.$champs.'` integer NOT NULL DEFAULT \''.(!empty($info['default']) && is_int($info['default']) ? $info['default'] : '0').'\'');
 				}else if($this->_is_date($info)) {
 
 	  				$db->Execute('ALTER TABLE `'.$this->get_table().'` ADD `'.$champs.'` datetime NULL');
@@ -474,7 +482,11 @@ function _no_save_vars($lst_chp) {
 			else $query[$nom_champ] = NULL;
 		}
 		else{
-			$date = date('Y-m-d H:i:s',$this->{$nom_champ});
+			if (preg_match('/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$/', $this->{$nom_champ})) {
+				$date = $this->{$nom_champ};
+			} else {
+				$date = date('Y-m-d H:i:s', $this->{$nom_champ});
+			}
 			$query[$nom_champ] = $date;
 		}
       }
@@ -485,8 +497,16 @@ function _no_save_vars($lst_chp) {
         $query[$nom_champ] = serialize($this->{$nom_champ});
       }
 
-      else if($this->_is_int($info)){
-        $query[$nom_champ] = (int)Tools::string2num($this->{$nom_champ});
+      else if($this->_is_int($info)) {
+          $res = (int) Tools::string2num($this->{$nom_champ});
+
+          // Handle nullable properties
+          if(isset($info['default']) && $res === 0 && $res !== $info['default']) {
+              $res = $info['default'];
+              if(isset($info['nullable']) && strtoupper($info['default']) === 'NULL') $res = null;
+          }
+
+          $query[$nom_champ] = $res;
       }
 
       else if($this->_is_float($info)){
@@ -958,7 +978,8 @@ function _no_save_vars($lst_chp) {
 				else $Tab[$key] = $value;
 			}
 			else if(substr($key,0, strlen(OBJETSTD_DATEMASK) )===OBJETSTD_DATEMASK){
-				if($value===FALSE)$Tab[$key] = '0000-00-00 00:00:00';
+				if($value===FALSE) $Tab[$key] = '0000-00-00 00:00:00';
+				elseif (is_string($value) && preg_match('/\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d/', $value)) $Tab[$key] = $value;
 				else $Tab[$key] = date('Y-m-d H:i:s',$value);
 			}
 			else{
