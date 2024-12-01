@@ -109,11 +109,11 @@ function TModuleVersionCompare($versionSource,$versionTarget, $skipDolVersion = 
  * Display title
  * @param string $title
  */
-function setup_print_title($title="", $width = 300)
+function setup_print_title($title="Parameter", $width = 300)
 {
     global $langs;
     print '<tr class="liste_titre">';
-    print '<td td class="titlefield">'.$langs->trans("Parameter").'</td>';
+	print '<td td class="titlefield">'.$langs->trans($title) . '</td>';
     print '<td td class="titlefield" align="center" width="20">&nbsp;</td>';
     print '<td td class="titlefield" align="center">'.$langs->trans('Value').'</td>';
     print '</tr>';
@@ -199,7 +199,7 @@ function setup_print_input_form_part($confkey, $title = false, $desc ='', $metas
 
     if($type!='textarea'){
         $defaultMetas['type']   = 'text';
-        $defaultMetas['value']  = $conf->global->{$confkey};
+        $defaultMetas['value']  = isset($conf->global->{$confkey}) ? $conf->global->{$confkey} : '';
     }
 
 

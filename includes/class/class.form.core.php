@@ -309,7 +309,7 @@ function select_projects($socid=-1, $selected='', $htmlname='projectid', $maxlen
 	if (! empty($conf->global->PROJECT_HIDE_UNSELECTABLES)) $hideunselectables = true;
 
 	$projectsListId = false;
-	if (empty($user->rights->projet->all->lire))
+	if (empty($user->hasRight('projet', 'all', 'lire')))
 	{
 		$projectstatic=new Project($db);
 		$projectsListId = $projectstatic->getProjectsAuthorizedForUser($user,0,1);
@@ -342,7 +342,7 @@ function select_projects($socid=-1, $selected='', $htmlname='projectid', $maxlen
 			{
 				$obj = $db->fetch_object($resql);
 				// If we ask to filter on a company and user has no permission to see all companies and project is linked to another company, we hide project.
-				if ($socid > 0 && (empty($obj->fk_soc) || $obj->fk_soc == $socid) && ! $user->rights->societe->lire)
+				if ($socid > 0 && (empty($obj->fk_soc) || $obj->fk_soc == $socid) && ! $user->hasRight('societe', 'lire'))
 				{
 					// Do nothing
 				}
@@ -1461,7 +1461,7 @@ function combo($pLib,$pName,$pListe,$pDefault,$pTaille=1,$onChange='',$plus='',$
 			$valueofempty=$showEmpty;
 		}
 
-        $field.='<option value="'.($show_empty < 0 ? $show_empty : -1).'"'.( $pDefault==$valueofempty ?' selected':'').'>'.$textforempty.'</option>'."\n";     // id is -2 because -1 is already "do not contact"
+        $field.='<option value="'.(isset($show_empty) && $show_empty < 0 ? $show_empty : -1).'"'.( $pDefault==$valueofempty ?' selected':'').'>'.$textforempty.'</option>'."\n";     // id is -2 because -1 is already "do not contact"
     }
 
   	$field.=$this->_combo_option($pListe, $pDefault);
@@ -2017,7 +2017,7 @@ function checkbox($pLib,$pName,$pListe,$pDefault, $plus="", $enLigne=true){
 						if($pVal=='')$pVal='Supprimer';
 						if($url!=''){
 							//la page se rafraichi sur elle meme, meme en popin car c'est l'action suivant qui fera le rafraichissement.
-							if((substr($url,0,4)=='http')||($url[0] == '?')){
+							if((substr($url,0,4)=='http')||(mb_substr($url, 0, 1) == '?')){
 								$url = "document.location.href='".$url."&mode=popin'";
 							}
 							else{

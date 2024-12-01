@@ -4,11 +4,30 @@ ___
 
 # NOT RELEASED
 
+## RELEASE 3.9
 
+- FIX: Replace `is_callable('parent::method')` with `is_callable(parent::class.'::method')` to avoid deprecation warning on php8.2 - *27/11/2024* - 3.9.2
+- FIX: constructor TResponseMail, class properties was not defined with old PHP constructor - *30/07/2024* - 3.9.1
+- FIX : Compat v20
+  Changed Dolibarr compatibility range to 16 min - 20 max - *04/08/2024* - 3.9.0
 
+## RELEASE 3.6
+- FIX : Warning php 8.2  warning undefined array key visible - *13/03/2024* - 3.8.3
+- FIX : Warning php 8.2  warning undefined array key visible - *14/12/2023* - 3.8.2
+- FIX : Warning php 8.2 - *11/12/2023* - 3.8.1
+- NEW : Compatibilité Dolibarr 19 - *22/11/2023* - 3.8.0
+  Attention : perte compatibilité Dolibarr inférieur à 6
+- NEW : TObjetStd add nullable property to integer fields - *21/11/2023* - 3.7.0
+- NEW : script de pré-configuration (initialisation / remplacement de certaines const) lors des installs / montées de version - *19/10/2023* - 3.6.0
+- FIX : traitement séparation des requêtes SQL, erreur sql lors de l'activation module productbycompany *7/12/2023* - 3.6.1
 
 ## RELEASE 3.5
 
+- FIX : PHP8: date string versus timestamp mixup - *05/09/2023* - 3.5.10
+- FIX : PHP8: warnings - *30/08/2023* - 3.5.9
+- FIX : Prise en compte du paramètre titre dans la fonction setup_print_title - *29/08/2023* - 3.5.8
+- FIX : setup_print_title function correction *03/08/2023* - 3.5.7
+- FIX : Query escape column names and Mysql/Pgsql compatibility *24/03/2023* - 3.5.6
 - FIX : Substitution script include ticket ref *3.5.5* - **27/02/2023**
 - FIX : script de migration des ticketsup prend en compte la ref dans actioncomm  + traitement erreur extrafields - *21/12/2022* - 3.5.4  
 - FIX : Retro compat *18/11/2022* - 3.5.3
@@ -18,6 +37,7 @@ ___
 
 
 ## RELEASE 3.4 - 11/03/2022
+
 - FIX : Fatal inclusion lib fail - *09/08/2022* - 3.4.10
 - FIX : V16 FAMILY  - *02/06/2022* - 3.4.9
 - FIX : V16 NewToken() - *02/06/2022* - 3.4.8
@@ -35,6 +55,7 @@ ___
 - NEW : Script for set to 1 encrypting of the password in multicompany admin/security conf  *14/01/2022* - 3.3
 
 ## RELEASE 3.2 - 29/06/2021
+
 - FIX : fatal php8.1 remove &$GLOBAL to $GLOBAL - *31/05/2022)* - 3.2.9  
 - FIX : Script for MVD add missing substitutions  *08/07/2021* - 3.2.8
 - FIX : Script for MVD add missing substitutions  *07/07/2021* - 3.2.7
